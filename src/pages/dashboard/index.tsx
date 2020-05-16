@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Title,Form } from './styles';
+import { Title,Form,Repositories } from './styles';
 //react function component
 
 const Dashboard: React.FC = () => {
@@ -11,6 +11,18 @@ const Dashboard: React.FC = () => {
                 <input placeholder="input here" />
                 <button type="submit">Search</button>
             </Form>
+            <Repositories>
+                <a href="teste">
+                    <img
+                        src="#"
+                        alt="Juliherms Vasconcelos">
+                    </img>
+                    <div>
+                        <strong>Microservicos</strong>
+                        <p>teste stes teste teste</p>
+                    </div>
+                </a>
+            </Repositories>
         </>
     );
 }
