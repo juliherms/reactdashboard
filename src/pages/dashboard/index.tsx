@@ -51,14 +51,12 @@ const Dashboard: React.FC = () => {
         } catch (err){
             setInputError('Erro with repository search');
         }
-        
     }
-
 
     return (
         <>
             <Title>Find Repositories in the Github</Title>
-            <Form onSubmit={handleAddRepository}>
+            <Form hasError={!!inputError} onSubmit={handleAddRepository}>
                 <input
                     value={newRepo}
                     onChange={(e) => setNewRepo(e.target.value)} 
