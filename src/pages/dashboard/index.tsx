@@ -1,6 +1,6 @@
 import React, { useState, FormEvent } from 'react';
 import { FiChevronRight } from 'react-icons/fi';
-import { Title,Form,Repositories } from './styles';
+import { Title,Form,Repositories, Error } from './styles';
 import api from '../../services/api';
 
 /**
@@ -18,6 +18,8 @@ interface Repository {
 //react function component
 const Dashboard: React.FC = () => {
 
+    //responsible to control inputError
+    const [inputError, setInputError] = useState('');
     //responsible to manipulate input searh
     const [newRepo,setNewRepo] = useState('');
     //responsible to storage repositories
@@ -31,15 +33,25 @@ const Dashboard: React.FC = () => {
 
         event.preventDefault(); //block refresh form
 
-        //call web api
-        const response = await api.get<Repository>(`repos/${newRepo}`);
-        const repository = response.data;
+        if(!newRepo){
+            setInputError('Please input author/name from repository');
+            return;
+        }
 
-        //add response in my repositories
-        setRepositories([... repositories, repository]);
+        try{
+            //call web api
+            const response = await api.get<Repository>(`repos/${newRepo}`);
+            const repository = response.data;
 
-        //clean input
-        setNewRepo('');
+            //add response in my repositories
+            setRepositories([... repositories, repository]);
+            //clean input
+            setNewRepo('');
+            setInputError('');
+        } catch (err){
+            setInputError('Erro with repository search');
+        }
+        
     }
 
 
@@ -53,6 +65,8 @@ const Dashboard: React.FC = () => {
                     placeholder="input here" />
                 <button type="submit">Search</button>
             </Form>
+
+        {inputError && <Error>inputError</Error>}
 
             <Repositories>
                 {repositories.map(repository => (
