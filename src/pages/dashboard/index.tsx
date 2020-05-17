@@ -1,50 +1,73 @@
-import React from 'react';
+import React, { useState, FormEvent } from 'react';
 import { FiChevronRight } from 'react-icons/fi';
 import { Title,Form,Repositories } from './styles';
-//react function component
+import api from '../../services/api';
 
+/**
+ * using github api return fields 
+ */
+interface Repository {
+    full_name: string;
+    description: string;
+    owner:{
+        login: string;
+        avatar_url:string;
+    };
+}
+
+//react function component
 const Dashboard: React.FC = () => {
+
+    //responsible to manipulate input searh
+    const [newRepo,setNewRepo] = useState('');
+    //responsible to storage repositories
+    const [repositories, setRepositories] = useState<Repository[]>([]);
+
+    /**
+     * Method responsible to add repositories
+     * @param event 
+     */
+    async function handleAddRepository(event: FormEvent<HTMLFormElement>): Promise<void> {
+
+        event.preventDefault(); //block refresh form
+
+        //call web api
+        const response = await api.get<Repository>(`repos/${newRepo}`);
+        const repository = response.data;
+
+        //add response in my repositories
+        setRepositories([... repositories, repository]);
+
+        //clean input
+        setNewRepo('');
+    }
+
+
     return (
         <>
             <Title>Find Repositories in the Github</Title>
-            <Form>
-                <input placeholder="input here" />
+            <Form onSubmit={handleAddRepository}>
+                <input
+                    value={newRepo}
+                    onChange={(e) => setNewRepo(e.target.value)} 
+                    placeholder="input here" />
                 <button type="submit">Search</button>
             </Form>
+
             <Repositories>
-                <a href="teste">
-                    <img
-                        src="https://avatars0.githubusercontent.com/u/37042672?s=460&u=dd7ea84516915c0b161d24fa7841a8f6cd9ca79b&v=4"
-                        alt="Juliherms Vasconcelos">
-                    </img>
-                    <div>
-                        <strong>Microservicos</strong>
-                        <p>teste stes teste teste</p>
-                    </div>
-                    <FiChevronRight size={20}></FiChevronRight>
-                </a>
-                <a href="teste">
-                    <img
-                        src="https://avatars0.githubusercontent.com/u/37042672?s=460&u=dd7ea84516915c0b161d24fa7841a8f6cd9ca79b&v=4"
-                        alt="Juliherms Vasconcelos">
-                    </img>
-                    <div>
-                        <strong>Microservicos</strong>
-                        <p>teste stes teste teste</p>
-                    </div>
-                    <FiChevronRight size={20}></FiChevronRight>
-                </a>
-                <a href="teste">
-                    <img
-                        src="https://avatars0.githubusercontent.com/u/37042672?s=460&u=dd7ea84516915c0b161d24fa7841a8f6cd9ca79b&v=4"
-                        alt="Juliherms Vasconcelos">
-                    </img>
-                    <div>
-                        <strong>Microservicos</strong>
-                        <p>teste stes teste teste</p>
-                    </div>
-                    <FiChevronRight size={20}></FiChevronRight>
-                </a>
+                {repositories.map(repository => (
+                    <a key={repository.full_name} href="teste">
+                        <img
+                            src={repository.owner.avatar_url}
+                            alt={repository.owner.login}>
+                        </img>
+                        <div>
+                            <strong>{repository.full_name}</strong>
+                            <p>{repository.description}</p>
+                        </div>
+                        <FiChevronRight size={20}></FiChevronRight>
+                    </a>
+                ))}
             </Repositories>
         </>
     );
