@@ -49,7 +49,7 @@ const Dashboard: React.FC = () => {
             setNewRepo('');
             setInputError('');
         } catch (err){
-            setInputError('Erro with repository search');
+            setInputError('Error with repository search');
         }
     }
 
@@ -64,7 +64,7 @@ const Dashboard: React.FC = () => {
                 <button type="submit">Search</button>
             </Form>
 
-        {inputError && <Error>inputError</Error>}
+        {inputError && <Error>{inputError}</Error>}
 
             <Repositories>
                 {repositories.map(repository => (
